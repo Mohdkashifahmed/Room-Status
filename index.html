@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SRU Timetable Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f8fc;
+    --panel: #ffffff;
+    --border: #dce6f2;
+    --ink: #142a4c;
+    --ink-dim: #5c7093;
+    --primary: #1857c9;
+    --primary-dim: #eaf1fc;
+    --accent: #d98a1e;
+    --free: #1e9e64;
+    --free-bg: #e7f7ef;
+    --occupied: #d6403a;
+    --occupied-bg: #fceae9;
+    --lab: #c98a2c;
+    --lab-bg: #fbf1df;
+    --leisure-bg: #f1f3f6;
+    --leisure-ink: #8b94a3;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Space Grotesk', sans-serif;
+    line-height: 1.45;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+
+  main.wrap {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 0 18px 60px;
+    width: 100%;
+    flex: 1;
+  }
+
+  /* ---------- Top bar ---------- */
+  header.top {
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 22px;
+  }
+  header.top .inner {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 16px 18px 0;
+  }
+  header.top .brand {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  header.top .brand .mark {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--primary);
+    letter-spacing: 0.01em;
+  }
+  header.top .brand .tag {
+    color: var(--ink-dim);
+    font-size: 0.85rem;
+  }
+
+  nav.tabs {
+    display: flex;
+    gap: 4px;
+  }
+  nav.tabs button {
+    flex: 1;
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--ink-dim);
+    padding: 12px 6px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+  }
+  nav.tabs button.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+  }
+  nav.tabs button:hover { color: var(--primary); }
+
+  /* ---------- Shared page bits ---------- */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  h1.page-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 4px 0 4px;
+  }
+  .page-sub {
+    color: var(--ink-dim);
+    font-size: 0.88rem;
+    margin-bottom: 18px;
+  }
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 14px;
+    align-items: center;
+  }
+  select, input[type=text] {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 0.9rem;
+    padding: 10px 12px;
+    border-radius: 8px;
+  }
+  select:disabled { color: var(--ink-dim); }
+  select:focus, input:focus { outline: 2px solid var(--primary); outline-offset: 1px; }
+  select { flex: 1 1 140px; min-width: 120px; }
+  input[type=text] { flex: 1 1 160px; }
+
+  .btn {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn:hover { opacity: 0.9; }
+
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    color: var(--ink-dim);
+    font-size: 0.85rem;
+  }
+  .toggle-row input { accent-color: var(--lab); width: 15px; height: 15px; }
+
+  .notice-box {
+    background: var(--primary-dim);
+    border: 1px solid var(--border);
+    color: var(--ink-dim);
+    font-size: 0.85rem;
+    padding: 14px 16px;
+    border-radius: 10px;
+    margin-bottom: 16px;
+  }
+
+  /* ---------- Home: timetable table ---------- */
+  .tt-scroll { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
+  table.tt-table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 640px;
+    background: var(--panel);
+  }
+  table.tt-table th {
+    background: var(--ink);
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 10px 8px;
+    text-align: center;
+  }
+  table.tt-table td {
+    border: 1px solid var(--border);
+    padding: 8px;
+    vertical-align: top;
+    font-size: 0.78rem;
+    min-width: 120px;
+  }
+  td.tt-time {
+    background: #f8fafc;
+    font-weight: 600;
+    color: var(--ink-dim);
+    white-space: nowrap;
+    min-width: 130px;
+  }
+  td.tt-cell.lecture { background: var(--primary-dim); }
+  td.tt-cell.lab { background: var(--lab-bg); }
+  td.tt-cell.tutorial { background: #e6f6f2; }
+  td.tt-cell .tt-subject { font-weight: 600; color: var(--ink); margin-bottom: 2px; }
+  td.tt-cell .tt-meta { color: var(--ink-dim); font-size: 0.72rem; }
+  td.tt-cell.tt-empty {
+    background: var(--leisure-bg);
+    text-align: center;
+    color: var(--leisure-ink);
+    font-style: italic;
+  }
+
+  /* ---------- Empty classes: pill grid ---------- */
+  .summary-line {
+    font-size: 0.88rem;
+    color: var(--ink-dim);
+    margin: 4px 0 16px;
+  }
+  .summary-line b { color: var(--ink); }
+
+  .pill-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .room-pill {
+    background: var(--panel);
+    border: 1.5px solid var(--free);
+    border-radius: 10px;
+    padding: 10px 8px;
+    text-align: center;
+    cursor: pointer;
+  }
+  .room-pill.lab { border-color: var(--lab); }
+  .room-pill .num { font-weight: 700; font-size: 1rem; }
+  .room-pill .sub { font-size: 0.66rem; color: var(--ink-dim); margin-top: 3px; line-height: 1.3; }
+  .room-pill:hover { background: #fafcff; }
+
+  .empty-note {
+    color: var(--ink-dim);
+    text-align: center;
+    padding: 30px 14px;
+    font-size: 0.9rem;
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+  }
+
+  /* ---------- Check classes: result card ---------- */
+  .result-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-top: 6px;
+    display: none;
+  }
+  .result-card.show { display: block; }
+  .result-card.free { border-left: 4px solid var(--free); }
+  .result-card.occupied { border-left: 4px solid var(--occupied); }
+  .result-card h3 { margin: 0 0 10px; font-size: 1.05rem; }
+  .result-row { display: flex; gap: 8px; padding: 4px 0; font-size: 0.88rem; }
+  .result-row .k { min-width: 90px; color: var(--ink-dim); }
+  .result-row .v { font-weight: 600; }
+
+  /* ---------- Footer ---------- */
+  /* ---------- Legend / tip boxes ---------- */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 26px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.82rem;
+    color: var(--ink-dim);
+  }
+  .swatch {
+    width: 14px; height: 14px;
+    border-radius: 4px;
+    display: inline-block;
+  }
+  .swatch.lecture { background: var(--primary-dim); border: 1px solid var(--primary); }
+  .swatch.lab { background: var(--lab-bg); border: 1px solid var(--lab); }
+  .swatch.tutorial { background: #e6f6f2; border: 1px solid #2f9e6b; }
+  .swatch.leisure { background: var(--leisure-bg); border: 1px solid var(--leisure-ink); }
+  .swatch-border {
+    width: 14px; height: 14px;
+    border-radius: 4px;
+    display: inline-block;
+    background: var(--panel);
+    border: 2px solid var(--free);
+  }
+  .swatch-border.lab { border-color: var(--lab); }
+
+  .tip-box {
+    margin-top: 18px;
+    font-size: 0.82rem;
+    color: var(--ink-dim);
+    background: var(--primary-dim);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+  }
+
+  footer.credit {
+    background: #0b0b0c;
+    color: #fff;
+    text-align: center;
+    font-size: 0.8rem;
+    padding: 14px 10px;
+    margin-top: auto;
+  }
+
+  @media (max-width: 480px) {
+    table.tt-table td, table.tt-table th { min-width: 100px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="inner">
+    <div class="brand">
+      <span class="mark">SRU</span>
+      <span class="tag">Timetable Portal</span>
+    </div>
+    <nav class="tabs">
+      <button data-page="home" class="active">Home</button>
+      <button data-page="empty">Empty Classes</button>
+      <button data-page="check">Check Classes</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ===================== HOME ===================== -->
+  <section class="page active" id="page-home">
+    <h1 class="page-title">My timetable</h1>
+    <div class="page-sub">Pick your degree, year and batch to see your weekly schedule.</div>
+
+    <div class="controls">
+      <select id="homeDegree"><option>Loading…</option></select>
+      <select id="homeYear" disabled><option>Select degree first</option></select>
+      <select id="homeBatch" disabled><option>Select year first</option></select>
+      <button class="btn" id="homeSearchBtn">Search</button>
+    </div>
+
+    <div id="homeMissingNotice" class="notice-box" style="display:none;">
+      This page needs one more file: <b class="mono">batch_directory.json</b>. Ask Claude for
+      <b class="mono">build_batch_directory.py</b>, run it, and drop the result in this same folder.
+    </div>
+
+    <div id="homeResult"></div>
+
+    <div class="legend">
+      <div class="legend-item"><span class="swatch lecture"></span> Lecture</div>
+      <div class="legend-item"><span class="swatch lab"></span> Lab</div>
+      <div class="legend-item"><span class="swatch tutorial"></span> Tutorial</div>
+      <div class="legend-item"><span class="swatch leisure"></span> Leisure (free period)</div>
+    </div>
+  </section>
+
+  <!-- ===================== EMPTY CLASSES ===================== -->
+  <section class="page" id="page-empty">
+    <h1 class="page-title">Find empty classrooms</h1>
+    <div class="page-sub">Pick a block, day and time slot to see which rooms are free.</div>
+
+    <div class="controls">
+      <select id="emptyBlock"><option value="all">All blocks</option></select>
+      <select id="emptyDay"><option>Loading…</option></select>
+      <select id="emptyTime"><option>Loading…</option></select>
+      <button class="btn" id="emptySearchBtn">Show free rooms</button>
+    </div>
+    <div class="toggle-row">
+      <input type="checkbox" id="emptyShowLabs">
+      <label for="emptyShowLabs">Also show lab rooms (usually not meant for sitting)</label>
+    </div>
+
+    <div class="summary-line" id="emptySummary"></div>
+    <div class="pill-grid" id="emptyGrid"></div>
+
+    <div class="legend">
+      <div class="legend-item"><span class="swatch-border free"></span> Regular classroom — free to sit in</div>
+      <div class="legend-item"><span class="swatch-border lab"></span> Lab — free, but not usually meant for sitting</div>
+    </div>
+    <div class="tip-box">Tip: click any room card to jump straight to Check Classes for it.</div>
+  </section>
+
+  <!-- ===================== CHECK CLASSES ===================== -->
+  <section class="page" id="page-check">
+    <h1 class="page-title">Check the classes going on</h1>
+    <div class="page-sub">Enter a room number to see what's happening there.</div>
+
+    <div class="controls">
+      <input type="text" id="checkRoom" placeholder="e.g. 8002">
+      <select id="checkDay"><option>Loading…</option></select>
+      <select id="checkTime"><option>Loading…</option></select>
+      <button class="btn" id="checkSearchBtn">Search</button>
+    </div>
+
+    <div class="result-card" id="checkResult"></div>
+
+    <div class="tip-box">Tip: don't know the room number? Check the Empty Classes tab first, or ask around — room numbers are usually written on the door.</div>
+  </section>
+
+</main>
+
+<footer class="credit">Unofficial — built by Kashif Ahmed</footer>
+
+<script>
+  /* ============================================================
+     Shared state & helpers
+  ============================================================ */
+  let rawData = {}, roomsIndex = {}, ALL_DAYS = [], ALL_SLOTS = [];
+  let batchDirectory = null;       // degree -> year -> [batch codes], may stay null
+  let batchToDegreeYear = {};      // batch code -> { degree, year }
+
+  const FLOOR_MAP = { GF: 'Ground floor', FF: 'First floor', SF: 'Second floor', TF: 'Third floor' };
+  const FLOOR_DIGIT = { GF: '0', FF: '1', SF: '2', TF: '3' };
+
+  function getDisplayCode(room_name) {
+    if (!room_name) return '—';
+    return room_name.split('-')[0];
+  }
+
+  function getRoomBreakdown(room_name) {
+    const code = getDisplayCode(room_name);
+    const meta = parseRoomMeta(room_name);
+    if (meta.block == null) return { code, block: null, floorDigit: null, room: null };
+    const parts = (room_name || '').split('-');
+    const floorCodeRaw = (parts[parts.length - 1] || '').toUpperCase();
+    const floorDigit = FLOOR_DIGIT[floorCodeRaw];
+    let roomPart = null;
+    if (floorDigit != null) {
+      const prefix = String(meta.block) + floorDigit;
+      if (code.startsWith(prefix)) roomPart = code.slice(prefix.length);
+    }
+    return { code, block: meta.block, floorDigit, room: roomPart };
+  }
+
+  function formatTime(t) {
+    const [h, m] = t.split(':').map(Number);
+    const period = h >= 12 ? 'PM' : 'AM';
+    let h12 = h % 12; if (h12 === 0) h12 = 12;
+    return `${h12}:${m.toString().padStart(2, '0')} ${period}`;
+  }
+
+  function formatTimeRange(t) {
+    const [h, m] = t.split(':').map(Number);
+    const endTotal = h * 60 + m + 60;
+    const endH = Math.floor(endTotal / 60) % 24;
+    const endM = endTotal % 60;
+    const endStr = formatTime(`${endH.toString().padStart(2, '0')}:${endM.toString().padStart(2, '0')}`);
+    return `${formatTime(t)} – ${endStr}`;
+  }
+
+  function parseRoomMeta(name) {
+    if (!name) return { block: null, floor: '' };
+    const blockMatch = name.match(/BL(\d+)/i);
+    const block = blockMatch ? parseInt(blockMatch[1], 10) : null;
+    const parts = name.split('-');
+    const floorCode = (parts[parts.length - 1] || '').toUpperCase();
+    return { block, floor: FLOOR_MAP[floorCode] || floorCode };
+  }
+
+  function formatBatch(b) {
+    if (!b) return '';
+    return b.split(',').map(s => s.trim()).join(', ');
+  }
+
+  function escapeHtml(s) {
+    const d = document.createElement('div');
+    d.textContent = s == null ? '' : s;
+    return d.innerHTML;
+  }
+
+  function slotToMinutes(t) {
+    const [h, m] = t.split(':').map(Number);
+    return h * 60 + m;
+  }
+
+  function findCurrentSlot(slots, nowMinutes) {
+    for (const s of slots) {
+      const sm = slotToMinutes(s);
+      if (nowMinutes >= sm && nowMinutes < sm + 60) return s;
+    }
+    return null;
+  }
+
+  function getRealWeekday() {
+    const names = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    return names[new Date().getDay()];
+  }
+
+  function getCurrentTimeMinutes() {
+    const now = new Date();
+    return now.getHours() * 60 + now.getMinutes();
+  }
+
+  function buildRoomsIndex(data) {
+    const index = {};
+    for (const day of Object.keys(data)) {
+      for (const time of Object.keys(data[day])) {
+        for (const [roomNum, entry] of Object.entries(data[day][time])) {
+          if (!index[roomNum]) index[roomNum] = { room_name: entry.room_name, typeCounts: {} };
+          if (!index[roomNum].room_name && entry.room_name) index[roomNum].room_name = entry.room_name;
+          let t = entry.type || 'Unknown';
+          if (t === 'Tut') t = 'Tutorial';
+          index[roomNum].typeCounts[t] = (index[roomNum].typeCounts[t] || 0) + 1;
+        }
+      }
+    }
+    for (const roomNum of Object.keys(index)) {
+      const info = index[roomNum];
+      const total = Object.values(info.typeCounts).reduce((a, b) => a + b, 0);
+      const labCount = info.typeCounts['Lab'] || 0;
+      info.labPct = total ? (labCount / total * 100) : 0;
+      info.isLab = info.labPct >= 50;
+      const meta = parseRoomMeta(info.room_name);
+      info.block = meta.block;
+      info.floor = meta.floor;
+    }
+    return index;
+  }
+
+  function populateDayTimeSelect(selectEl, includeSpecial) {
+    let html = '';
+    if (includeSpecial) html += `<option value="today-now">Today, right now</option>`;
+    ALL_DAYS.forEach(d => html += `<option value="${d}">${d}</option>`);
+    selectEl.innerHTML = html;
+  }
+
+  function populateTimeSelect(selectEl, includeSpecial) {
+    let html = '';
+    if (includeSpecial) html += `<option value="now">Right now</option>`;
+    ALL_SLOTS.forEach(s => html += `<option value="${s}">${formatTime(s)}</option>`);
+    selectEl.innerHTML = html;
+  }
+
+  /* ============================================================
+     Tab navigation
+  ============================================================ */
+  document.querySelectorAll('nav.tabs button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('nav.tabs button').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('page-' + btn.dataset.page).classList.add('active');
+    });
+  });
+
+  /* ============================================================
+     HOME — personal timetable
+  ============================================================ */
+  const homeDegree = document.getElementById('homeDegree');
+  const homeYear = document.getElementById('homeYear');
+  const homeBatch = document.getElementById('homeBatch');
+  const homeSearchBtn = document.getElementById('homeSearchBtn');
+  const homeMissingNotice = document.getElementById('homeMissingNotice');
+  const homeResult = document.getElementById('homeResult');
+
+  function populateHomeDegrees() {
+    if (!batchDirectory) {
+      homeDegree.innerHTML = '<option>Unavailable</option>';
+      homeMissingNotice.style.display = 'block';
+      return;
+    }
+    homeMissingNotice.style.display = 'none';
+    homeDegree.innerHTML = '<option value="">Select degree</option>' +
+      Object.keys(batchDirectory).map(d => `<option value="${d}">${d}</option>`).join('');
+    homeDegree.disabled = false;
+  }
+
+  homeDegree.addEventListener('change', () => {
+    const degree = homeDegree.value;
+    if (!degree || !batchDirectory[degree]) {
+      homeYear.innerHTML = '<option>Select degree first</option>';
+      homeYear.disabled = true;
+      homeBatch.innerHTML = '<option>Select year first</option>';
+      homeBatch.disabled = true;
+      return;
+    }
+    const YEAR_ORDER = ['First', 'Second', 'Third', 'Fourth'];
+    const years = Object.keys(batchDirectory[degree]).sort((a, b) => YEAR_ORDER.indexOf(a) - YEAR_ORDER.indexOf(b));
+    homeYear.innerHTML = '<option value="">Select year</option>' + years.map(y => `<option value="${y}">${y}</option>`).join('');
+    homeYear.disabled = false;
+    homeBatch.innerHTML = '<option>Select year first</option>';
+    homeBatch.disabled = true;
+  });
+
+  homeYear.addEventListener('change', () => {
+    const degree = homeDegree.value, year = homeYear.value;
+    if (!degree || !year) {
+      homeBatch.innerHTML = '<option>Select year first</option>';
+      homeBatch.disabled = true;
+      return;
+    }
+    const batches = batchDirectory[degree][year] || [];
+    homeBatch.innerHTML = '<option value="">Select batch</option>' + batches.map(b => `<option value="${b}">${b}</option>`).join('');
+    homeBatch.disabled = false;
+  });
+
+  function getBatchTimetable(batchCode) {
+    const result = {};
+    ALL_DAYS.forEach(day => {
+      result[day] = {};
+      ALL_SLOTS.forEach(slot => {
+        const roomsAtSlot = (rawData[day] && rawData[day][slot]) ? rawData[day][slot] : {};
+        let found = null;
+        for (const [roomNum, entry] of Object.entries(roomsAtSlot)) {
+          const batches = (entry.batch || '').split(',').map(s => s.trim());
+          if (batches.includes(batchCode)) { found = entry; break; }
+        }
+        result[day][slot] = found;
+      });
+    });
+    return result;
+  }
+
+  function renderHomeTimetable(batchCode) {
+    const tt = getBatchTimetable(batchCode);
+    let html = '<div class="tt-scroll"><table class="tt-table"><thead><tr><th>Time</th>';
+    ALL_DAYS.forEach(d => html += `<th>${d}</th>`);
+    html += '</tr></thead><tbody>';
+    ALL_SLOTS.forEach(slot => {
+      html += `<tr><td class="tt-time mono">${formatTimeRange(slot)}</td>`;
+      ALL_DAYS.forEach(day => {
+        const e = tt[day][slot];
+        if (e) {
+          const typeClass = (e.type || '').toLowerCase();
+          const code = getDisplayCode(e.room_name);
+          html += `<td class="tt-cell ${typeClass}"><div class="tt-subject">${escapeHtml(e.subject)}</div><div class="tt-meta">Room ${escapeHtml(code)}${e.faculty ? ' · ' + escapeHtml(e.faculty) : ''}</div></td>`;
+        } else {
+          html += `<td class="tt-cell tt-empty"><span>Leisure</span></td>`;
+        }
+      });
+      html += '</tr>';
+    });
+    html += '</tbody></table></div>';
+    homeResult.innerHTML = html;
+  }
+
+  homeSearchBtn.addEventListener('click', () => {
+    const batch = homeBatch.value;
+    if (!batch) {
+      homeResult.innerHTML = '<div class="empty-note">Pick a degree, year and batch first.</div>';
+      return;
+    }
+    renderHomeTimetable(batch);
+  });
+
+  /* ============================================================
+     EMPTY CLASSES
+  ============================================================ */
+  const emptyBlock = document.getElementById('emptyBlock');
+  const emptyDay = document.getElementById('emptyDay');
+  const emptyTime = document.getElementById('emptyTime');
+  const emptyShowLabs = document.getElementById('emptyShowLabs');
+  const emptySearchBtn = document.getElementById('emptySearchBtn');
+  const emptySummary = document.getElementById('emptySummary');
+  const emptyGrid = document.getElementById('emptyGrid');
+
+  function resolveDayTimeFor(daySel, timeSel) {
+    let dayKey, timeKey;
+    if (daySel.value === 'today-now') {
+      const w = getRealWeekday();
+      dayKey = ALL_DAYS.includes(w) ? w : null;
+      timeKey = dayKey ? findCurrentSlot(ALL_SLOTS, getCurrentTimeMinutes()) : null;
+      return { dayKey, timeKey };
+    }
+    dayKey = daySel.value;
+    timeKey = timeSel.value === 'now' ? findCurrentSlot(ALL_SLOTS, getCurrentTimeMinutes()) : timeSel.value;
+    return { dayKey, timeKey };
+  }
+
+  function runEmptySearch() {
+    const blockFilter = emptyBlock.value;
+    const includeLabs = emptyShowLabs.checked;
+    const { dayKey, timeKey } = resolveDayTimeFor(emptyDay, emptyTime);
+
+    const occupancy = (dayKey && timeKey && rawData[dayKey] && rawData[dayKey][timeKey]) ? rawData[dayKey][timeKey] : {};
+
+    let rooms = Object.entries(roomsIndex).map(([num, info]) => ({ num, ...info }));
+    if (blockFilter !== 'all') rooms = rooms.filter(r => String(r.block) === blockFilter);
+    if (!includeLabs) rooms = rooms.filter(r => !r.isLab);
+
+    const free = rooms.filter(r => !occupancy[r.num]);
+
+    emptySummary.innerHTML = `<b>${free.length}</b> of ${rooms.length} rooms free`;
+
+    if (free.length === 0) {
+      emptyGrid.innerHTML = '';
+      emptyGrid.parentElement.querySelector('.empty-note')?.remove();
+      const note = document.createElement('div');
+      note.className = 'empty-note';
+      note.textContent = 'No free rooms match this filter.';
+      emptyGrid.after(note);
+      return;
+    }
+    document.querySelector('#page-empty .empty-note')?.remove();
+
+    free.sort((a, b) => (a.block || 0) - (b.block || 0) || getDisplayCode(a.room_name).localeCompare(getDisplayCode(b.room_name), undefined, { numeric: true }));
+
+    emptyGrid.innerHTML = free.map(r => {
+      const bd = getRoomBreakdown(r.room_name);
+      const breakdown = (bd.block != null && bd.room != null)
+        ? `Block ${bd.block} · Floor ${bd.floorDigit} · Room ${bd.room}`
+        : (r.floor ? r.floor : '');
+      return `
+        <div class="room-pill ${r.isLab ? 'lab' : ''}" data-code="${escapeHtml(bd.code)}">
+          <div class="num mono">${escapeHtml(bd.code)}</div>
+          <div class="sub">${escapeHtml(breakdown)}${r.isLab ? ' · Lab' : ''}</div>
+        </div>
+      `;
+    }).join('');
+
+    emptyGrid.querySelectorAll('.room-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelector('nav.tabs button[data-page="check"]').click();
+        document.getElementById('checkRoom').value = pill.dataset.code;
+      });
+    });
+  }
+
+  emptySearchBtn.addEventListener('click', runEmptySearch);
+
+  /* ============================================================
+     CHECK CLASSES
+  ============================================================ */
+  const checkRoom = document.getElementById('checkRoom');
+  const checkDay = document.getElementById('checkDay');
+  const checkTime = document.getElementById('checkTime');
+  const checkSearchBtn = document.getElementById('checkSearchBtn');
+  const checkResult = document.getElementById('checkResult');
+
+  function runCheckSearch() {
+    const q = checkRoom.value.trim();
+    if (!q) return;
+
+    const qNorm = q.toLowerCase();
+    let matchKey = Object.keys(roomsIndex).find(k => getDisplayCode(roomsIndex[k].room_name).toLowerCase() === qNorm);
+    if (!matchKey) {
+      matchKey = Object.keys(roomsIndex).find(k => (roomsIndex[k].room_name || '').toLowerCase().includes(qNorm));
+    }
+
+    if (!matchKey) {
+      checkResult.className = 'result-card show';
+      checkResult.innerHTML = `<div class="result-row"><span class="v">No room found matching "${escapeHtml(q)}".</span></div>`;
+      return;
+    }
+
+    const { dayKey, timeKey } = resolveDayTimeFor(checkDay, checkTime);
+    const info = roomsIndex[matchKey];
+    const displayCode = getDisplayCode(info.room_name);
+    const occ = (dayKey && timeKey && rawData[dayKey] && rawData[dayKey][timeKey]) ? rawData[dayKey][timeKey][matchKey] : null;
+
+    if (!occ) {
+      checkResult.className = 'result-card show free';
+      checkResult.innerHTML = `
+        <h3>Room ${escapeHtml(displayCode)} is free</h3>
+        <div class="result-row"><span class="k">Location</span><span class="v">${escapeHtml(info.room_name || '—')}</span></div>
+        <div class="result-row"><span class="k">Type</span><span class="v">${info.isLab ? 'Usually a lab' : 'Regular classroom'}</span></div>
+      `;
+      return;
+    }
+
+    const firstBatch = (occ.batch || '').split(',')[0].trim();
+    const meta = batchToDegreeYear[firstBatch];
+
+    let extraRows = '';
+    if (meta) {
+      extraRows += `<div class="result-row"><span class="k">Branch</span><span class="v">${escapeHtml(meta.degree)}</span></div>`;
+      extraRows += `<div class="result-row"><span class="k">Year</span><span class="v">${escapeHtml(meta.year)}</span></div>`;
+    }
+
+    checkResult.className = 'result-card show occupied';
+    checkResult.innerHTML = `
+      <h3>Room ${escapeHtml(displayCode)} is in use</h3>
+      ${extraRows}
+      <div class="result-row"><span class="k">Batch(es)</span><span class="v">${escapeHtml(formatBatch(occ.batch))}</span></div>
+      <div class="result-row"><span class="k">Lecture</span><span class="v">${escapeHtml(occ.subject)}</span></div>
+      <div class="result-row"><span class="k">Faculty</span><span class="v">${escapeHtml(occ.faculty || '—')}</span></div>
+      <div class="result-row"><span class="k">Type</span><span class="v">${escapeHtml(occ.type || '—')}</span></div>
+    `;
+  }
+
+  checkSearchBtn.addEventListener('click', runCheckSearch);
+  checkRoom.addEventListener('keydown', e => { if (e.key === 'Enter') runCheckSearch(); });
+
+  /* ============================================================
+     Initial data load
+  ============================================================ */
+  fetch('room_schedule.json')
+    .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(data => {
+      rawData = data;
+      const WEEK_ORDER = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+      ALL_DAYS = Object.keys(rawData).sort((a, b) => WEEK_ORDER.indexOf(a) - WEEK_ORDER.indexOf(b));
+      const slotSet = new Set();
+      ALL_DAYS.forEach(day => Object.keys(rawData[day]).forEach(slot => slotSet.add(slot)));
+      ALL_SLOTS = [...slotSet].sort((a, b) => slotToMinutes(a) - slotToMinutes(b));
+      roomsIndex = buildRoomsIndex(rawData);
+
+      const blocks = [...new Set(Object.values(roomsIndex).map(r => r.block).filter(b => b != null))].sort((a, b) => a - b);
+      emptyBlock.innerHTML = '<option value="all">All blocks</option>' + blocks.map(b => `<option value="${b}">Block ${b}</option>`).join('');
+
+      populateDayTimeSelect(emptyDay, true);
+      populateTimeSelect(emptyTime, true);
+      populateDayTimeSelect(checkDay, true);
+      populateTimeSelect(checkTime, true);
+    })
+    .catch(err => {
+      document.querySelectorAll('.page').forEach(p => {
+        p.innerHTML = `<div class="empty-note">Couldn't load room_schedule.json (${escapeHtml(err.message)}). Make sure it's in the same folder as this page and that you're viewing this through a local server, not by double-clicking the file.</div>`;
+      });
+    });
+
+  fetch('batch_directory.json')
+    .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(data => {
+      batchDirectory = data;
+      Object.entries(batchDirectory).forEach(([degree, years]) => {
+        Object.entries(years).forEach(([year, batches]) => {
+          batches.forEach(b => { batchToDegreeYear[b] = { degree, year }; });
+        });
+      });
+      populateHomeDegrees();
+    })
+    .catch(() => {
+      homeMissingNotice.style.display = 'block';
+      homeDegree.innerHTML = '<option>Unavailable</option>';
+    });
+</script>
+</body>
+</html>
