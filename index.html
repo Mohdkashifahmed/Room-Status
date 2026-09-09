@@ -313,6 +313,64 @@
     padding: 10px 14px;
   }
 
+  /* ---------- Calendar ---------- */
+  .cal-month-heading {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 22px 0 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .cal-month-heading:first-child { margin-top: 4px; }
+
+  .cal-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin-bottom: 4px;
+    border-left: 3px solid transparent;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-left-width: 3px;
+  }
+  .cal-row.holiday { border-left-color: var(--free); }
+  .cal-row.exam { border-left-color: var(--occupied); }
+  .cal-row.event { border-left-color: var(--lab); }
+  .cal-row.milestone { border-left-color: var(--primary); }
+  .cal-row.working_day { border-left-color: var(--ink-dim); opacity: 0.8; }
+
+  .cal-row .cal-date {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: var(--ink-dim);
+    min-width: 108px;
+  }
+  .cal-row .cal-title { font-weight: 600; font-size: 0.9rem; flex: 1; }
+  .cal-row .cal-tag {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .cal-row .cal-tag.now { background: var(--occupied-bg); color: var(--occupied); }
+  .cal-row .cal-tag.soon { background: var(--lab-bg); color: var(--lab); }
+
+  .swatch.cal-holiday { background: var(--free-bg); border: 1px solid var(--free); }
+  .swatch.cal-exam { background: var(--occupied-bg); border: 1px solid var(--occupied); }
+  .swatch.cal-event { background: var(--lab-bg); border: 1px solid var(--lab); }
+  .swatch.cal-milestone { background: var(--primary-dim); border: 1px solid var(--primary); }
+  .swatch.cal-workingday { background: #eee; border: 1px solid var(--ink-dim); }
+
+  @media (max-width: 480px) {
+    .cal-row { flex-wrap: wrap; }
+    .cal-row .cal-title { min-width: 100%; order: 3; }
+  }
+
   footer.credit {
     background: #0b0b0c;
     color: #fff;
@@ -339,6 +397,7 @@
       <button data-page="home" class="active">Home</button>
       <button data-page="empty">Empty Classes</button>
       <button data-page="check">Check Classes</button>
+      <button data-page="calendar">Calendar</button>
     </nav>
   </div>
 </header>
@@ -413,6 +472,26 @@
     <div class="result-card" id="checkResult"></div>
 
     <div class="tip-box">Tip: don't know the room number? Check the Empty Classes tab first, or ask around — room numbers are usually written on the door.</div>
+  </section>
+
+  <!-- ===================== CALENDAR ===================== -->
+  <section class="page" id="page-calendar">
+    <h1 class="page-title">Academic calendar</h1>
+    <div class="page-sub">Search, or scroll through the whole semester below.</div>
+
+    <div class="controls">
+      <input type="text" id="calSearch" placeholder="Search e.g. holiday, mid exam, hackathon" style="flex: 1 1 100%;">
+    </div>
+
+    <div id="calList"></div>
+
+    <div class="legend">
+      <div class="legend-item"><span class="swatch cal-holiday"></span> Holiday</div>
+      <div class="legend-item"><span class="swatch cal-exam"></span> Exam</div>
+      <div class="legend-item"><span class="swatch cal-event"></span> Event</div>
+      <div class="legend-item"><span class="swatch cal-milestone"></span> Milestone</div>
+      <div class="legend-item"><span class="swatch cal-workingday"></span> Working day (in lieu)</div>
+    </div>
   </section>
 
 </main>
@@ -800,6 +879,98 @@
   checkRoom.addEventListener('keydown', e => { if (e.key === 'Enter') runCheckSearch(); });
 
   /* ============================================================
+     CALENDAR
+  ============================================================ */
+  const calSearch = document.getElementById('calSearch');
+  const calList = document.getElementById('calList');
+  let calEvents = [];
+
+  const CAL_LABELS = {
+    holiday: 'Holiday',
+    exam: 'Exam',
+    event: 'Event',
+    milestone: 'Milestone',
+    working_day: 'Working day'
+  };
+
+  const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+  function parseCalDate(iso) {
+    const [y, m, d] = iso.split('-').map(Number);
+    return new Date(y, m - 1, d);
+  }
+
+  function formatCalRange(startIso, endIso) {
+    const s = parseCalDate(startIso);
+    const e = parseCalDate(endIso);
+    const sLabel = `${DAYS[s.getDay()]}, ${s.getDate()} ${MONTHS[s.getMonth()].slice(0, 3)}`;
+    if (startIso === endIso) return sLabel;
+    if (s.getMonth() === e.getMonth() && s.getFullYear() === e.getFullYear()) {
+      return `${s.getDate()}\u2013${e.getDate()} ${MONTHS[s.getMonth()].slice(0, 3)}`;
+    }
+    return `${s.getDate()} ${MONTHS[s.getMonth()].slice(0, 3)} \u2013 ${e.getDate()} ${MONTHS[e.getMonth()].slice(0, 3)}`;
+  }
+
+  function getCalTag(startIso, endIso) {
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    const start = parseCalDate(startIso);
+    const end = parseCalDate(endIso);
+    const oneWeekMs = 7 * 24 * 60 * 60 * 1000;
+    if (now >= start && now <= end) return { text: 'Happening now', cls: 'now' };
+    if (start > now && (start - now) <= oneWeekMs) return { text: 'This week', cls: 'soon' };
+    return null;
+  }
+
+  function renderCalendar(filterText) {
+    const q = (filterText || '').trim().toLowerCase();
+    const filtered = q
+      ? calEvents.filter(e => e.title.toLowerCase().includes(q) || CAL_LABELS[e.category].toLowerCase().includes(q))
+      : calEvents;
+
+    if (filtered.length === 0) {
+      calList.innerHTML = '<div class="empty-note">No calendar entries match that search.</div>';
+      return;
+    }
+
+    const sorted = [...filtered].sort((a, b) => a.start.localeCompare(b.start));
+    let html = '';
+    let currentMonthKey = null;
+
+    sorted.forEach(e => {
+      const s = parseCalDate(e.start);
+      const monthKey = `${s.getFullYear()}-${s.getMonth()}`;
+      if (monthKey !== currentMonthKey) {
+        currentMonthKey = monthKey;
+        html += `<div class="cal-month-heading">${MONTHS[s.getMonth()]} ${s.getFullYear()}</div>`;
+      }
+      const tag = getCalTag(e.start, e.end);
+      html += `
+        <div class="cal-row ${e.category}">
+          <div class="cal-date">${formatCalRange(e.start, e.end)}</div>
+          <div class="cal-title">${escapeHtml(e.title)}</div>
+          ${tag ? `<span class="cal-tag ${tag.cls}">${tag.text}</span>` : ''}
+        </div>
+      `;
+    });
+
+    calList.innerHTML = html;
+  }
+
+  calSearch.addEventListener('input', () => renderCalendar(calSearch.value));
+
+  fetch('calendar_events.json')
+    .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(data => {
+      calEvents = data;
+      renderCalendar('');
+    })
+    .catch(err => {
+      calList.innerHTML = `<div class="empty-note">Couldn't load calendar_events.json (${escapeHtml(err.message)}). Make sure it's in the same folder as this page.</div>`;
+    });
+
+  /* ============================================================
      Initial data load
   ============================================================ */
   fetch('room_schedule.json')
@@ -822,8 +993,8 @@
       populateTimeSelect(checkTime, true);
     })
     .catch(err => {
-      document.querySelectorAll('.page').forEach(p => {
-        p.innerHTML = `<div class="empty-note">Couldn't load room_schedule.json (${escapeHtml(err.message)}). Make sure it's in the same folder as this page and that you're viewing this through a local server, not by double-clicking the file.</div>`;
+      ['page-home', 'page-empty', 'page-check'].forEach(id => {
+        document.getElementById(id).innerHTML = `<div class="empty-note">Couldn't load room_schedule.json (${escapeHtml(err.message)}). Make sure it's in the same folder as this page and that you're viewing this through a local server, not by double-clicking the file.</div>`;
       });
     });
 
