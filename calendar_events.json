@@ -1,46 +1,722 @@
 [
-  { "start": "2026-08-15", "end": "2026-08-15", "category": "holiday", "title": "Independence Day" },
-  { "start": "2026-08-26", "end": "2026-08-26", "category": "holiday", "title": "Eid Miladun Nabi" },
-  { "start": "2026-08-27", "end": "2026-08-27", "category": "holiday", "title": "Holiday (declared)" },
-  { "start": "2026-08-28", "end": "2026-08-28", "category": "holiday", "title": "Raksha Bandhan" },
-  { "start": "2026-08-29", "end": "2026-08-29", "category": "holiday", "title": "National Sports Day" },
-  { "start": "2026-09-04", "end": "2026-09-04", "category": "holiday", "title": "Sri Krishna Astami" },
-  { "start": "2026-09-05", "end": "2026-09-05", "category": "holiday", "title": "Teachers' Day" },
-  { "start": "2026-09-14", "end": "2026-09-14", "category": "holiday", "title": "Vinayaka Chaturthi" },
-  { "start": "2026-10-02", "end": "2026-10-02", "category": "holiday", "title": "Mahatma Gandhi Jayanti" },
-  { "start": "2026-10-03", "end": "2026-10-03", "category": "holiday", "title": "Holiday (declared)" },
-  { "start": "2026-10-19", "end": "2026-10-19", "category": "holiday", "title": "Durga Ashtami" },
-  { "start": "2026-10-20", "end": "2026-10-23", "category": "holiday", "title": "Dusshera" },
-  { "start": "2026-11-07", "end": "2026-11-07", "category": "holiday", "title": "Holiday (declared)" },
-  { "start": "2026-11-08", "end": "2026-11-08", "category": "holiday", "title": "Deepavali" },
-  { "start": "2026-11-23", "end": "2026-11-23", "category": "holiday", "title": "Holiday (declared)" },
-  { "start": "2026-11-24", "end": "2026-11-24", "category": "holiday", "title": "Guru Nanak Jayanti" },
-  { "start": "2026-12-25", "end": "2026-12-25", "category": "holiday", "title": "Christmas" },
-
-  { "start": "2026-09-19", "end": "2026-09-19", "category": "working_day", "title": "Working day (in lieu of Aug 27 holiday)" },
-  { "start": "2026-09-26", "end": "2026-09-26", "category": "working_day", "title": "Working day (in lieu of Sep 5 holiday)" },
-  { "start": "2026-10-10", "end": "2026-10-10", "category": "working_day", "title": "Working day (in lieu of Oct 3 holiday)" },
-  { "start": "2026-11-14", "end": "2026-11-14", "category": "working_day", "title": "Working day (in lieu of Nov 7 holiday)" },
-  { "start": "2026-11-28", "end": "2026-11-28", "category": "working_day", "title": "Working day (in lieu of Nov 23 holiday)" },
-
-  { "start": "2026-09-25", "end": "2026-10-01", "category": "exam", "title": "Mid-Term Exams" },
-  { "start": "2026-10-26", "end": "2026-10-30", "category": "exam", "title": "Mid-Term Make-Up Test (9:20\u201310:20 AM only)" },
-  { "start": "2026-11-27", "end": "2026-11-28", "category": "exam", "title": "Practical / Lab Exams" },
-  { "start": "2026-11-30", "end": "2026-12-05", "category": "exam", "title": "End-Term Exams" },
-  { "start": "2026-12-18", "end": "2026-12-28", "category": "exam", "title": "Supplementary / End-Term Make-Up Exams" },
-
-  { "start": "2026-09-01", "end": "2026-09-01", "category": "event", "title": "International Students Day" },
-  { "start": "2026-09-15", "end": "2026-09-15", "category": "event", "title": "Engineers Day" },
-  { "start": "2026-09-18", "end": "2026-09-18", "category": "event", "title": "InnovAstra \u2013 The BizHack (6 PM\u20136 AM)" },
-  { "start": "2026-10-30", "end": "2026-11-01", "category": "event", "title": "SRUMUN'26" },
-  { "start": "2026-11-06", "end": "2026-11-06", "category": "event", "title": "Second Year Night Hackathon" },
-  { "start": "2026-11-11", "end": "2026-11-11", "category": "event", "title": "National Education Day" },
-  { "start": "2026-11-13", "end": "2026-11-13", "category": "event", "title": "First Year Night Hackathon" },
-  { "start": "2026-11-19", "end": "2026-11-19", "category": "event", "title": "Boys Hostel Night" },
-  { "start": "2026-11-20", "end": "2026-11-20", "category": "event", "title": "Girls Hostel Night" },
-  { "start": "2026-11-26", "end": "2026-11-26", "category": "event", "title": "Constitution Day" },
-
-  { "start": "2026-10-05", "end": "2026-10-05", "category": "milestone", "title": "2nd Spell of Instruction starts" },
-  { "start": "2026-11-28", "end": "2026-11-28", "category": "milestone", "title": "Last Working Day of Odd Semester" },
-  { "start": "2027-01-01", "end": "2027-01-01", "category": "milestone", "title": "Even Semester begins" }
+  {
+    "start": "2026-07-27",
+    "end": "2026-07-31",
+    "category": "regular",
+    "title": "Summer vacation"
+  },
+  {
+    "start": "2026-08-01",
+    "end": "2026-08-02",
+    "category": "regular",
+    "title": "Weekend break"
+  },
+  {
+    "start": "2026-08-03",
+    "end": "2026-08-03",
+    "category": "event",
+    "title": "UG & PG Orientation Program"
+  },
+  {
+    "start": "2026-08-04",
+    "end": "2026-08-04",
+    "category": "milestone",
+    "title": "First Teaching Day – 1st Spell of Instructions begins (late course registration/fee fine of Rs.5000 applies from today)"
+  },
+  {
+    "start": "2026-08-05",
+    "end": "2026-08-05",
+    "category": "regular",
+    "title": "Teaching day"
+  },
+  {
+    "start": "2026-08-06",
+    "end": "2026-08-07",
+    "category": "event",
+    "title": "Batch Representative nomination window"
+  },
+  {
+    "start": "2026-08-08",
+    "end": "2026-08-09",
+    "category": "regular",
+    "title": "Weekend break – batch representative voting window"
+  },
+  {
+    "start": "2026-08-10",
+    "end": "2026-08-10",
+    "category": "event",
+    "title": "Club Activities, 11 AM–5 PM (no classes that window); Batch Representative winners announced"
+  },
+  {
+    "start": "2026-08-11",
+    "end": "2026-08-11",
+    "category": "regular",
+    "title": "Teaching day"
+  },
+  {
+    "start": "2026-08-12",
+    "end": "2026-08-12",
+    "category": "event",
+    "title": "Library Day"
+  },
+  {
+    "start": "2026-08-13",
+    "end": "2026-08-13",
+    "category": "regular",
+    "title": "Teaching day"
+  },
+  {
+    "start": "2026-08-14",
+    "end": "2026-08-14",
+    "category": "event",
+    "title": "NSS Anti-Ragging Day program; late course registration/fee fine window ends"
+  },
+  {
+    "start": "2026-08-15",
+    "end": "2026-08-15",
+    "category": "holiday",
+    "title": "Independence Day"
+  },
+  {
+    "start": "2026-08-16",
+    "end": "2026-08-16",
+    "category": "regular",
+    "title": "Weekend break"
+  },
+  {
+    "start": "2026-08-17",
+    "end": "2026-08-17",
+    "category": "regular",
+    "title": "Teaching day"
+  },
+  {
+    "start": "2026-08-18",
+    "end": "2026-08-18",
+    "category": "regular",
+    "title": "Teaching day"
+  },
+  {
+    "start": "2026-08-19",
+    "end": "2026-08-19",
+    "category": "regular",
+    "title": "Teaching day"
+  },
+  {
+    "start": "2026-08-20",
+    "end": "2026-08-20",
+    "category": "regular",
+    "title": "Teaching day"
+  },
+  {
+    "start": "2026-08-21",
+    "end": "2026-08-21",
+    "category": "regular",
+    "title": "Teaching day"
+  },
+  {
+    "start": "2026-08-22",
+    "end": "2026-08-23",
+    "category": "regular",
+    "title": "Weekend break"
+  },
+  {
+    "start": "2026-08-24",
+    "end": "2026-08-24",
+    "category": "event",
+    "title": "First Review – UG Final Year Capstone Project/Internship"
+  },
+  {
+    "start": "2026-08-25",
+    "end": "2026-08-25",
+    "category": "regular",
+    "title": "Teaching day"
+  },
+  {
+    "start": "2026-08-26",
+    "end": "2026-08-26",
+    "category": "holiday",
+    "title": "Eid Miladun Nabi"
+  },
+  {
+    "start": "2026-08-27",
+    "end": "2026-08-27",
+    "category": "holiday",
+    "title": "Holiday (declared)"
+  },
+  {
+    "start": "2026-08-28",
+    "end": "2026-08-28",
+    "category": "holiday",
+    "title": "Raksha Bandhan"
+  },
+  {
+    "start": "2026-08-29",
+    "end": "2026-08-29",
+    "category": "holiday",
+    "title": "Holiday – National Sports Day"
+  },
+  {
+    "start": "2026-08-30",
+    "end": "2026-08-30",
+    "category": "regular",
+    "title": "Weekend break"
+  },
+  {
+    "start": "2026-08-31",
+    "end": "2026-08-31",
+    "category": "regular",
+    "title": "Teaching day"
+  },
+  {
+    "start": "2026-09-01",
+    "end": "2026-09-01",
+    "category": "event",
+    "title": "International Students Day; Prize Distribution to Semester Toppers (11 AM–1 PM); Club Activities 11 AM–5 PM (no classes that window)"
+  },
+  {
+    "start": "2026-09-02",
+    "end": "2026-09-02",
+    "category": "regular",
+    "title": "Teaching day"
+  },
+  {
+    "start": "2026-09-03",
+    "end": "2026-09-03",
+    "category": "regular",
+    "title": "Teaching day"
+  },
+  {
+    "start": "2026-09-04",
+    "end": "2026-09-04",
+    "category": "holiday",
+    "title": "Sri Krishna Astami"
+  },
+  {
+    "start": "2026-09-05",
+    "end": "2026-09-05",
+    "category": "holiday",
+    "title": "Teachers' Day"
+  },
+  {
+    "start": "2026-09-06",
+    "end": "2026-09-06",
+    "category": "regular",
+    "title": "Weekend break"
+  },
+  {
+    "start": "2026-09-07",
+    "end": "2026-09-07",
+    "category": "event",
+    "title": "Industrial Tour begins (for selected students)"
+  },
+  {
+    "start": "2026-09-08",
+    "end": "2026-09-08",
+    "category": "regular",
+    "title": "Teaching day"
+  },
+  {
+    "start": "2026-09-09",
+    "end": "2026-09-09",
+    "category": "regular",
+    "title": "Teaching day"
+  },
+  {
+    "start": "2026-09-10",
+    "end": "2026-09-10",
+    "category": "regular",
+    "title": "Teaching day"
+  },
+  {
+    "start": "2026-09-11",
+    "end": "2026-09-11",
+    "category": "event",
+    "title": "NSS Mega Camp; Industrial Tour continues"
+  },
+  {
+    "start": "2026-09-12",
+    "end": "2026-09-13",
+    "category": "regular",
+    "title": "Weekend break"
+  },
+  {
+    "start": "2026-09-14",
+    "end": "2026-09-14",
+    "category": "holiday",
+    "title": "Vinayaka Chaturthi"
+  },
+  {
+    "start": "2026-09-15",
+    "end": "2026-09-15",
+    "category": "event",
+    "title": "Engineers Day; End-Term Exam fee notification released"
+  },
+  {
+    "start": "2026-09-16",
+    "end": "2026-09-16",
+    "category": "regular",
+    "title": "Teaching day"
+  },
+  {
+    "start": "2026-09-17",
+    "end": "2026-09-17",
+    "category": "regular",
+    "title": "Teaching day"
+  },
+  {
+    "start": "2026-09-18",
+    "end": "2026-09-18",
+    "category": "event",
+    "title": "NSS Swachh Bharat Mission Program; InnovAstra – The BizHack (6 PM–6 AM)"
+  },
+  {
+    "start": "2026-09-19",
+    "end": "2026-09-20",
+    "category": "regular",
+    "title": "Weekend break"
+  },
+  {
+    "start": "2026-09-21",
+    "end": "2026-09-21",
+    "category": "milestone",
+    "title": "Mid-Term Exam date sheet released; Mid-Term Feedback window opens"
+  },
+  {
+    "start": "2026-09-22",
+    "end": "2026-09-22",
+    "category": "event",
+    "title": "Second Review – UG Final Year Capstone Project/Internship"
+  },
+  {
+    "start": "2026-09-23",
+    "end": "2026-09-23",
+    "category": "milestone",
+    "title": "Mid-Term Feedback window closes; Mid-Term seating plan released"
+  },
+  {
+    "start": "2026-09-24",
+    "end": "2026-09-24",
+    "category": "event",
+    "title": "NSS Day"
+  },
+  {
+    "start": "2026-09-25",
+    "end": "2026-10-01",
+    "category": "exam",
+    "title": "Mid-Term Exams"
+  },
+  {
+    "start": "2026-10-02",
+    "end": "2026-10-02",
+    "category": "holiday",
+    "title": "Mahatma Gandhi Jayanti"
+  },
+  {
+    "start": "2026-10-03",
+    "end": "2026-10-03",
+    "category": "holiday",
+    "title": "Holiday (declared); NSS Special Camp begins (through Oct 10)"
+  },
+  {
+    "start": "2026-10-04",
+    "end": "2026-10-04",
+    "category": "regular",
+    "title": "Weekend break"
+  },
+  {
+    "start": "2026-10-05",
+    "end": "2026-10-05",
+    "category": "milestone",
+    "title": "2nd Spell of Instruction begins; Course registration & fee payment window opens; Department Project Showcase"
+  },
+  {
+    "start": "2026-10-06",
+    "end": "2026-10-06",
+    "category": "regular",
+    "title": "Teaching day"
+  },
+  {
+    "start": "2026-10-07",
+    "end": "2026-10-07",
+    "category": "event",
+    "title": "Club Activities, 11 AM–5 PM (no classes that window); Mid-Term answer-sheet review window; course registration & fee payment window closes"
+  },
+  {
+    "start": "2026-10-08",
+    "end": "2026-10-08",
+    "category": "milestone",
+    "title": "Late course registration/fee window opens (Rs.500 fine)"
+  },
+  {
+    "start": "2026-10-09",
+    "end": "2026-10-09",
+    "category": "event",
+    "title": "Project & Startup Showcase; Parent-Teacher Meet"
+  },
+  {
+    "start": "2026-10-10",
+    "end": "2026-10-11",
+    "category": "regular",
+    "title": "Weekend break – Mid-Term Make-Up registration opens"
+  },
+  {
+    "start": "2026-10-12",
+    "end": "2026-10-12",
+    "category": "milestone",
+    "title": "Late course registration/fee window (Rs.1000 fine)"
+  },
+  {
+    "start": "2026-10-13",
+    "end": "2026-10-13",
+    "category": "milestone",
+    "title": "Mid-Term Make-Up registration closes"
+  },
+  {
+    "start": "2026-10-14",
+    "end": "2026-10-14",
+    "category": "milestone",
+    "title": "Late Mid-Term Make-Up registration (Rs.500 fine)"
+  },
+  {
+    "start": "2026-10-15",
+    "end": "2026-10-15",
+    "category": "milestone",
+    "title": "Late Mid-Term Make-Up registration (Rs.1000 fine); late course registration (Rs.5000 fine)"
+  },
+  {
+    "start": "2026-10-16",
+    "end": "2026-10-16",
+    "category": "milestone",
+    "title": "Mid-Term Make-Up exam date sheet released; late registration window closes"
+  },
+  {
+    "start": "2026-10-17",
+    "end": "2026-10-18",
+    "category": "regular",
+    "title": "Weekend break"
+  },
+  {
+    "start": "2026-10-19",
+    "end": "2026-10-19",
+    "category": "holiday",
+    "title": "Durga Ashtami"
+  },
+  {
+    "start": "2026-10-20",
+    "end": "2026-10-23",
+    "category": "holiday",
+    "title": "Dusshera"
+  },
+  {
+    "start": "2026-10-24",
+    "end": "2026-10-25",
+    "category": "regular",
+    "title": "Weekend break"
+  },
+  {
+    "start": "2026-10-26",
+    "end": "2026-11-02",
+    "category": "exam",
+    "title": "Mid-Term Make-Up Test, 9:20–10:20 AM on class days (no classes 9–11 AM)"
+  },
+  {
+    "start": "2026-10-30",
+    "end": "2026-11-01",
+    "category": "event",
+    "title": "SRUMUN'26"
+  },
+  {
+    "start": "2026-11-03",
+    "end": "2026-11-03",
+    "category": "regular",
+    "title": "Teaching day"
+  },
+  {
+    "start": "2026-11-04",
+    "end": "2026-11-04",
+    "category": "regular",
+    "title": "Teaching day"
+  },
+  {
+    "start": "2026-11-05",
+    "end": "2026-11-05",
+    "category": "event",
+    "title": "Club Activities, 11 AM–5 PM (no classes that window); Mid-Term Make-Up answer-sheet review window"
+  },
+  {
+    "start": "2026-11-06",
+    "end": "2026-11-06",
+    "category": "event",
+    "title": "Second Year Night Hackathon"
+  },
+  {
+    "start": "2026-11-07",
+    "end": "2026-11-07",
+    "category": "holiday",
+    "title": "Holiday (declared)"
+  },
+  {
+    "start": "2026-11-08",
+    "end": "2026-11-08",
+    "category": "holiday",
+    "title": "Deepavali"
+  },
+  {
+    "start": "2026-11-09",
+    "end": "2026-11-09",
+    "category": "regular",
+    "title": "Teaching day"
+  },
+  {
+    "start": "2026-11-10",
+    "end": "2026-11-10",
+    "category": "regular",
+    "title": "Teaching day"
+  },
+  {
+    "start": "2026-11-11",
+    "end": "2026-11-11",
+    "category": "event",
+    "title": "National Education Day"
+  },
+  {
+    "start": "2026-11-12",
+    "end": "2026-11-12",
+    "category": "regular",
+    "title": "Teaching day"
+  },
+  {
+    "start": "2026-11-13",
+    "end": "2026-11-14",
+    "category": "event",
+    "title": "Vyuha – Management Meet; First Year Night Hackathon"
+  },
+  {
+    "start": "2026-11-15",
+    "end": "2026-11-15",
+    "category": "regular",
+    "title": "Weekend break"
+  },
+  {
+    "start": "2026-11-16",
+    "end": "2026-11-16",
+    "category": "milestone",
+    "title": "End-Term / Mentor-Mentee / CLO Feedback window opens"
+  },
+  {
+    "start": "2026-11-17",
+    "end": "2026-11-17",
+    "category": "regular",
+    "title": "Teaching day"
+  },
+  {
+    "start": "2026-11-18",
+    "end": "2026-11-18",
+    "category": "milestone",
+    "title": "End-Term / Mentor-Mentee / CLO Feedback window closes"
+  },
+  {
+    "start": "2026-11-19",
+    "end": "2026-11-19",
+    "category": "event",
+    "title": "Boys Hostel Night (for hostellers)"
+  },
+  {
+    "start": "2026-11-20",
+    "end": "2026-11-20",
+    "category": "event",
+    "title": "Girls Hostel Night (for hostellers)"
+  },
+  {
+    "start": "2026-11-21",
+    "end": "2026-11-22",
+    "category": "regular",
+    "title": "Weekend break"
+  },
+  {
+    "start": "2026-11-23",
+    "end": "2026-11-23",
+    "category": "holiday",
+    "title": "Holiday (declared)"
+  },
+  {
+    "start": "2026-11-24",
+    "end": "2026-11-24",
+    "category": "holiday",
+    "title": "Guru Nanak Jayanti"
+  },
+  {
+    "start": "2026-11-25",
+    "end": "2026-11-25",
+    "category": "milestone",
+    "title": "End-Term Exam fee payment window closes"
+  },
+  {
+    "start": "2026-11-26",
+    "end": "2026-11-26",
+    "category": "event",
+    "title": "Constitution Day"
+  },
+  {
+    "start": "2026-11-27",
+    "end": "2026-11-28",
+    "category": "exam",
+    "title": "Practical / Lab Exams; Nov 28 is also the Last Working Day of the Odd Semester"
+  },
+  {
+    "start": "2026-11-29",
+    "end": "2026-11-29",
+    "category": "regular",
+    "title": "Weekend break"
+  },
+  {
+    "start": "2026-11-30",
+    "end": "2026-12-05",
+    "category": "exam",
+    "title": "End-Term Exams"
+  },
+  {
+    "start": "2026-12-06",
+    "end": "2026-12-06",
+    "category": "regular",
+    "title": "Weekend break"
+  },
+  {
+    "start": "2026-12-07",
+    "end": "2026-12-07",
+    "category": "milestone",
+    "title": "Even Semester fee payment window opens; End-Term answer-sheet review window opens"
+  },
+  {
+    "start": "2026-12-08",
+    "end": "2026-12-08",
+    "category": "regular",
+    "title": "Teaching day"
+  },
+  {
+    "start": "2026-12-09",
+    "end": "2026-12-09",
+    "category": "milestone",
+    "title": "Last day to review End-Term answer sheets"
+  },
+  {
+    "start": "2026-12-10",
+    "end": "2026-12-10",
+    "category": "regular",
+    "title": "Teaching day"
+  },
+  {
+    "start": "2026-12-11",
+    "end": "2026-12-11",
+    "category": "milestone",
+    "title": "Odd Semester results declared; Supplementary/End-Term Make-Up registration opens; Even Semester fee payment window closes"
+  },
+  {
+    "start": "2026-12-12",
+    "end": "2026-12-13",
+    "category": "regular",
+    "title": "Weekend break"
+  },
+  {
+    "start": "2026-12-14",
+    "end": "2026-12-14",
+    "category": "milestone",
+    "title": "Supplementary/End-Term Make-Up registration closes; Even Semester late fee window opens (Rs.500 fine)"
+  },
+  {
+    "start": "2026-12-15",
+    "end": "2026-12-15",
+    "category": "milestone",
+    "title": "Even Semester course registration opens; late Supplementary/Make-Up registration (Rs.500 fine)"
+  },
+  {
+    "start": "2026-12-16",
+    "end": "2026-12-16",
+    "category": "milestone",
+    "title": "Late Supplementary/Make-Up registration (Rs.1000 fine)"
+  },
+  {
+    "start": "2026-12-17",
+    "end": "2026-12-17",
+    "category": "regular",
+    "title": "Teaching day"
+  },
+  {
+    "start": "2026-12-18",
+    "end": "2026-12-24",
+    "category": "exam",
+    "title": "Supplementary / End-Term Make-Up Exams; Even Semester late fee window (Rs.1000 fine) from Dec 18"
+  },
+  {
+    "start": "2026-12-19",
+    "end": "2026-12-20",
+    "category": "regular",
+    "title": "Weekend break"
+  },
+  {
+    "start": "2026-12-22",
+    "end": "2026-12-22",
+    "category": "milestone",
+    "title": "Even Semester course registration closes"
+  },
+  {
+    "start": "2026-12-23",
+    "end": "2026-12-23",
+    "category": "event",
+    "title": "Kisan Diwas; Even Semester late course registration window (Rs.500 fine)"
+  },
+  {
+    "start": "2026-12-25",
+    "end": "2026-12-25",
+    "category": "holiday",
+    "title": "Christmas"
+  },
+  {
+    "start": "2026-12-26",
+    "end": "2026-12-27",
+    "category": "regular",
+    "title": "Weekend break"
+  },
+  {
+    "start": "2026-12-28",
+    "end": "2026-12-28",
+    "category": "exam",
+    "title": "Supplementary / End-Term Make-Up Exam continues; Even Semester late course registration (Rs.1000 fine)"
+  },
+  {
+    "start": "2026-12-29",
+    "end": "2026-12-29",
+    "category": "milestone",
+    "title": "Supplementary/Make-Up Exam answer-sheet review window opens"
+  },
+  {
+    "start": "2026-12-30",
+    "end": "2026-12-30",
+    "category": "milestone",
+    "title": "Last day to review Supplementary/Make-Up Exam answer sheets"
+  },
+  {
+    "start": "2026-12-31",
+    "end": "2026-12-31",
+    "category": "milestone",
+    "title": "Supplementary/End-Term Make-Up Exam results declared"
+  },
+  {
+    "start": "2027-01-01",
+    "end": "2027-01-01",
+    "category": "milestone",
+    "title": "Even Semester begins; UG & PG Orientation Program"
+  },
+  {
+    "start": "2027-01-02",
+    "end": "2027-01-03",
+    "category": "regular",
+    "title": "Weekend break"
+  },
+  {
+    "start": "2027-01-04",
+    "end": "2027-01-04",
+    "category": "milestone",
+    "title": "First Teaching Day – 1st Spell of Instructions begins (late registration/fee fine of Rs.5000 applies from today)"
+  }
 ]
