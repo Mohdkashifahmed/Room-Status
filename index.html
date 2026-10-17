@@ -209,6 +209,7 @@
   td.tt-cell.tutorial { background: #e6f6f2; }
   td.tt-cell .tt-subject { font-weight: 600; color: var(--ink); margin-bottom: 2px; }
   td.tt-cell .tt-meta { color: var(--ink-dim); font-size: 0.72rem; }
+  td.tt-cell .tt-extra { margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(0,0,0,0.1); }
   td.tt-cell.tt-empty {
     background: var(--leisure-bg);
     text-align: center;
@@ -267,6 +268,7 @@
   .result-row { display: flex; gap: 8px; padding: 4px 0; font-size: 0.88rem; }
   .result-row .k { min-width: 90px; color: var(--ink-dim); }
   .result-row .v { font-weight: 600; }
+  .result-sep { height: 1px; background: rgba(0,0,0,0.1); margin: 10px 0 6px; }
 
   /* ---------- Footer ---------- */
   /* ---------- Legend / tip boxes ---------- */
@@ -741,15 +743,52 @@
       result[day] = {};
       ALL_SLOTS.forEach(slot => {
         const roomsAtSlot = (rawData[day] && rawData[day][slot]) ? rawData[day][slot] : {};
-        let found = null;
+        const found = [];
         for (const [roomNum, entry] of Object.entries(roomsAtSlot)) {
-          const batches = (entry.batch || '').split(',').map(s => s.trim());
-          if (batches.includes(batchCode)) { found = entry; break; }
+          // a room can hold more than one class in the same hour: the main entry plus "others"
+          [entry].concat(entry.others || []).forEach(c => {
+            const batches = (c.batch || '').split(',').map(s => s.trim());
+            if (batches.includes(batchCode)) found.push(c);
+          });
         }
         result[day][slot] = found;
       });
     });
     return result;
+  }
+
+  function renderCellClasses(list) {
+    // same subject + type are grouped together
+    const groups = [];
+    list.forEach(c => {
+      const key = (c.subject || '') + '|' + (c.type || '');
+      let g = groups.find(x => x.key === key);
+      if (!g) { g = { key, subject: c.subject, type: c.type, items: [] }; groups.push(g); }
+      g.items.push(c);
+    });
+    // a subject run by many faculty groups at once (e.g. Capstone) is shown as one block
+    const blocks = [];
+    groups.forEach(g => {
+      if (g.items.length > 3) blocks.push({ subject: g.subject, type: g.type, many: g.items });
+      else g.items.forEach(c => blocks.push({ subject: c.subject, type: c.type, one: c }));
+    });
+    const types = [...new Set(blocks.map(b => (b.type || '').toLowerCase()))];
+    const multi = blocks.length > 1;
+    const inner = blocks.map((b, i) => {
+      const tag = multi && b.type ? escapeHtml(b.type) + ' · ' : '';
+      let meta;
+      if (b.many) {
+        const rooms = [...new Set(b.many.map(c => getDisplayCode(c.room_name)))];
+        const nFaculty = new Set(b.many.map(c => c.faculty).filter(Boolean)).size;
+        meta = tag + (rooms.length > 1 ? 'Rooms ' : 'Room ') + escapeHtml(rooms.join(', ')) + (nFaculty ? ' · ' + nFaculty + ' faculty' : '');
+      } else {
+        const c = b.one;
+        meta = tag + 'Room ' + escapeHtml(getDisplayCode(c.room_name)) + (c.faculty ? ' · ' + escapeHtml(c.faculty) : '');
+      }
+      const block = `<div class="tt-subject">${escapeHtml(b.subject)}</div><div class="tt-meta">${meta}</div>`;
+      return i === 0 ? block : `<div class="tt-extra">${block}</div>`;
+    }).join('');
+    return { typeClass: types.length === 1 ? types[0] : '', inner };
   }
 
   function renderHomeTimetable(batchCode) {
@@ -760,11 +799,10 @@
     ALL_SLOTS.forEach(slot => {
       html += `<tr><td class="tt-time mono">${formatTimeRange(slot)}</td>`;
       ALL_DAYS.forEach(day => {
-        const e = tt[day][slot];
-        if (e) {
-          const typeClass = (e.type || '').toLowerCase();
-          const code = getDisplayCode(e.room_name);
-          html += `<td class="tt-cell ${typeClass}"><div class="tt-subject">${escapeHtml(e.subject)}</div><div class="tt-meta">Room ${escapeHtml(code)}${e.faculty ? ' · ' + escapeHtml(e.faculty) : ''}</div></td>`;
+        const list = tt[day][slot];
+        if (list.length) {
+          const cell = renderCellClasses(list);
+          html += `<td class="tt-cell ${cell.typeClass}">${cell.inner}</td>`;
         } else {
           html += `<td class="tt-cell tt-empty"><span>Leisure</span></td>`;
         }
@@ -899,23 +937,27 @@
       return;
     }
 
-    const firstBatch = (occ.batch || '').split(',')[0].trim();
-    const meta = batchToDegreeYear[firstBatch];
-
-    let extraRows = '';
-    if (meta) {
-      extraRows += `<div class="result-row"><span class="k">Branch</span><span class="v">${escapeHtml(meta.degree)}</span></div>`;
-      extraRows += `<div class="result-row"><span class="k">Year</span><span class="v">${escapeHtml(meta.year)}</span></div>`;
-    }
+    const classRows = c => {
+      const firstBatch = (c.batch || '').split(',')[0].trim();
+      const meta = batchToDegreeYear[firstBatch];
+      let extraRows = '';
+      if (meta) {
+        extraRows += `<div class="result-row"><span class="k">Branch</span><span class="v">${escapeHtml(meta.degree)}</span></div>`;
+        extraRows += `<div class="result-row"><span class="k">Year</span><span class="v">${escapeHtml(meta.year)}</span></div>`;
+      }
+      return `
+      ${extraRows}
+      <div class="result-row"><span class="k">Batch(es)</span><span class="v">${escapeHtml(formatBatch(c.batch))}</span></div>
+      <div class="result-row"><span class="k">Lecture</span><span class="v">${escapeHtml(c.subject)}</span></div>
+      <div class="result-row"><span class="k">Faculty</span><span class="v">${escapeHtml(c.faculty || '—')}</span></div>
+      <div class="result-row"><span class="k">Type</span><span class="v">${escapeHtml(c.type || '—')}</span></div>`;
+    };
+    const allClasses = [occ].concat(occ.others || []);
 
     checkResult.className = 'result-card show occupied';
     checkResult.innerHTML = `
       <h3>Room ${escapeHtml(displayCode)} is in use</h3>
-      ${extraRows}
-      <div class="result-row"><span class="k">Batch(es)</span><span class="v">${escapeHtml(formatBatch(occ.batch))}</span></div>
-      <div class="result-row"><span class="k">Lecture</span><span class="v">${escapeHtml(occ.subject)}</span></div>
-      <div class="result-row"><span class="k">Faculty</span><span class="v">${escapeHtml(occ.faculty || '—')}</span></div>
-      <div class="result-row"><span class="k">Type</span><span class="v">${escapeHtml(occ.type || '—')}</span></div>
+      ${allClasses.map(classRows).join('<div class="result-sep"></div>')}
     `;
   }
 
