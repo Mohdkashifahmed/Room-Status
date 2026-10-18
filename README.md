@@ -18,7 +18,7 @@
 ![Vercel](https://img.shields.io/badge/Hosted_on-Vercel-000000?style=flat-square&logo=vercel&logoColor=white)
 ![Unofficial](https://img.shields.io/badge/Status-Unofficial_student_project-f59e0b?style=flat-square)
 
-[Features](#-features) · [Numbers](#-at-a-glance) · [Data](#-how-the-data-works) · [Run it locally](#-run-it-locally) · [Project structure](#-project-structure)
+[Features](#-features) · [Numbers](#-at-a-glance) · [Data](#-how-the-data-works)
 
 </div>
 
@@ -135,41 +135,6 @@ The flip side is that a snapshot goes out of date when the real timetable change
 A room can host more than one class in the same hour (for example parallel lab groups). The first class is the main entry and any others are kept in the `others` list, so no class is ever dropped.
 
 </details>
-
----
-
-## 🚀 Run it locally
-
-You only need Python (or any other simple web server). There is nothing to install.
-
-```bash
-# 1. Download or clone this repository, then open a terminal inside the folder
-
-# 2. Start a local web server
-python -m http.server 8000
-
-# 3. Open it in your browser
-#    http://localhost:8000
-```
-
-> [!NOTE]
-> Don't open `index.html` by double-clicking it. The page loads its data with `fetch`, which browsers only allow when the page is served from a web server.
-
----
-
-## 🗂️ Project structure
-
-```text
-.
-├── index.html               # The whole website: HTML, CSS and JavaScript in one file
-├── room_schedule.json       # Every class, organised by day → time → room
-├── batch_directory.json     # Degrees, years and batches for the dropdowns
-├── calendar_events.json     # Academic calendar entries
-├── fetch_timetable_v2.py    # Script that builds the timetable data
-└── build_batch_directory.py # Script that builds the batch list
-```
-
-**Built with:** plain HTML, CSS and JavaScript (no framework), the *Space Grotesk* and *IBM Plex Mono* fonts, and automatic deployment on **Vercel** straight from GitHub.
 
 ---
 
